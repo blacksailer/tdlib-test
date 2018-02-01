@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>qml/tdlib-test.qml</file>
+        <file>qml/pages/FirstPage.qml</file>
+        <file>qml/pages/SecondPage.qml</file>
+        <file>qml/cover/CoverPage.qml</file>
+    </qresource>
+</RCC>
