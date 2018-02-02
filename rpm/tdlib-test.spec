@@ -26,9 +26,8 @@ BuildRequires:  pkgconfig(sailfishapp) >= 1.0.2
 BuildRequires:  pkgconfig(Qt5Core)
 BuildRequires:  pkgconfig(Qt5Qml)
 BuildRequires:  pkgconfig(Qt5Quick)
+BuildRequires:  pkgconfig(Qt5DBus)
 BuildRequires:  desktop-file-utils
-BuildRequires:  tdlib
-
 
 %description
 Short description of my Sailfish OS Application

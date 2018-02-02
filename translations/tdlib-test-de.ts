@@ -15,12 +15,12 @@
         <translation>Zur Seite 2</translation>
     </message>
     <message>
-        <source>UI Template</source>
-        <translation>UI-Vorlage</translation>
+        <source>Hello TDLib</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Hello Sailors</source>
-        <translation>Hallo Matrosen</translation>
+        <source>UI Template1</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

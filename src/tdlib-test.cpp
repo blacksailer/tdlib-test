@@ -33,6 +33,7 @@
 #endif
 
 #include <sailfishapp.h>
+#include <QGuiApplication>
 #include <QQuickView>
 #include <QQmlContext>
 #include "TdClientWrapper.hpp"
@@ -51,12 +52,11 @@ int main(int argc, char *argv[])
     // To display the view, call "show()" (will show fullscreen on device).
     QGuiApplication *app = SailfishApp::application(argc, argv);
     TdClientWrapper client(app);
-    client.loop();
-
     QQuickView *view = SailfishApp::createView();
     view->rootContext()->setContextProperty("с_tdlib", &client);
     view->setSource(QUrl("qrc:/qml/tdlib-test.qml"));
     view->show();
 
+    client.loop();
     return app->exec();
 }

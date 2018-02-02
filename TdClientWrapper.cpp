@@ -10,11 +10,9 @@ using Object = td::td_api::object_ptr<td::td_api::Object>;
 
 TdClientWrapper::TdClientWrapper(QObject *parent) : QObject(parent)
 {
-    td_set_log_verbosity_level(5);
+    td_set_log_verbosity_level(1);
     client = td_json_client_create();
-
-
-//SEG FAULT means that json has error input variable names
+    //SEG FAULT means that json has error input variable names
     std::string tdlibParameters = "{\"@type\":\"setTdlibParameters\",\"parameters\":{"
                                   "\"use_message_database\":true,"
                                   "\"use_secret_chats\":false,"
@@ -39,31 +37,51 @@ TdClientWrapper::TdClientWrapper(QObject *parent) : QObject(parent)
 
 void TdClientWrapper::loop()
 {
-    std::string str_start = td_json_client_receive(client, 10);
-    std::cout << str_start << std::endl;
-    timer.setInterval(100);
-    connect(&timer, &QTimer::timeout, [this]() {
-        QtConcurrent::run(this, &TdClientWrapper::getResponse);
-    });
-    timer.start();
+    receiveObject = new ReceiveObject(client);
+    parserObject = new ParserObject(this);
+
+    thread = new QThread;
+    parserThread = new QThread;
+    receiveObject->moveToThread(thread);
+    parserObject->moveToThread(parserThread);
+//    connect(receiveThread, &ReceiveThread::resultReady, this, &TdClientWrapper::logEmitted,
+//            Qt::QueuedConnection);
+//    connect(receiveThread, &ReceiveThread::resultReady, this, &TdClientWrapper::Log,
+//            Qt::QueuedConnection);
+    connect(thread, &QThread::started, receiveObject, &ReceiveObject::listen, Qt::QueuedConnection);
+    connect(receiveObject, &ReceiveObject::resultReady, parserObject, &ParserObject::parseResponse,
+            Qt::QueuedConnection);
+    connect(parserObject, &ParserObject::updateNewMessage, this, &TdClientWrapper::updateNewMessage);
+    thread->start();
+    parserThread->start();
+
+//    std::string str_start = td_json_client_receive(client, 10);
+//    std::cout << str_start << std::endl;
+
+//    timer.setInterval(100);
+//    connect(&timer, &QTimer::timeout, [this]() {
+//        QtConcurrent::run(this, &TdClientWrapper::getResponse);
+//    });
+//    timer.start();
 
 }
 
 std::string TdClientWrapper::getResponse()
 {
-    std::string str = td_json_client_receive(client, 0);
-    qDebug() << QString::fromStdString(str);
-    return str;
+    std::string str = td_json_client_receive(client, 10);
+    if (!str.empty()) {
+        QString result = QString::fromStdString(str);
+        emit logEmitted(result);
+    }
 }
 
 
 void TdClientWrapper::setPhone(QString number)
 {
-    std::string phoneNumber  {"+71112223344"};
     qDebug() << number;
     std::string setAuthenticationPhoneNumber =
         "{\"@type\":\"setAuthenticationPhoneNumber\","
-        "\"phone_number\":\"" + phoneNumber + "\","
+        "\"phone_number\":\"" + number.toStdString() + "\","
         "\"allow_flash_call\":false}";
     td_json_client_send(client, setAuthenticationPhoneNumber.c_str());
 }
@@ -100,4 +118,9 @@ void TdClientWrapper::getChats()
                           "}";
 
     td_json_client_send(client, getChats.c_str());
+}
+
+void TdClientWrapper::Log(const QString &str)
+{
+    qDebug() << str;
 }

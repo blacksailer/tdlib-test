@@ -13,10 +13,12 @@
 TARGET = tdlib-test
 
 CONFIG += sailfishapp
-QT += concurrent
-
+QT += concurrent dbus
+PKGCONFIG +=  nemonotifications-qt5
 SOURCES += src/tdlib-test.cpp \
-    TdClientWrapper.cpp
+    TdClientWrapper.cpp \
+    src/ReceiveObject.cpp \
+    src/ParserObject.cpp
 CONFIG += c++11
 CONFIG (debug, debug|release) {
         OBJECTS_DIR = build/debug
@@ -54,7 +56,10 @@ CONFIG += sailfishapp_i18n
 TRANSLATIONS += translations/tdlib-test-de.ts
 
 HEADERS += \
-    TdClientWrapper.hpp
+    TdClientWrapper.hpp \
+    src/ReceiveObject.hpp \
+    src/ParserObject.hpp
+
 
 RESOURCES += \
     resources.qrc

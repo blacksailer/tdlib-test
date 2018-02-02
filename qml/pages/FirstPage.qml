@@ -30,17 +30,38 @@
 
 import QtQuick 2.0
 import Sailfish.Silica 1.0
-
+import Nemo.Notifications 1.0
 
 Page {
     id: page
 
+    Notification {
+        id: notification
+        category: "x-nemo.example"
+        summary: "Notification summary"
+        body: "Notification body"
+                 previewSummary: "Notification preview summary"
+                 previewBody: "Notification preview body"
+                 timestamp: "2013-02-20 18:21:00"
+        onClicked: console.log("Clicked")
+    }
     // The effective value will be restricted by ApplicationWindow.allowedOrientations
     allowedOrientations: Orientation.All
 
     Connections {
         target: с_tdlib
         onLogEmitted: logArea.text += log +"/n"
+        onUpdateNewMessage: {
+            var newMessage = msg
+            console.log(newMessage, newMessage["disable_notification"])
+            if(newMessage["disable_notification"] === false) {
+                var content = newMessage["message"]["content"]
+                if(content["@type"] === "messageText") {
+                    notification.previewBody = content["text"]
+                }
+//                notification.publish()
+            }
+        }
 
     }
 
@@ -67,11 +88,11 @@ Page {
             width: page.width
             spacing: Theme.paddingLarge
             PageHeader {
-                title: qsTr("UI Template")
+                title: qsTr("UI Template1")
             }
             Label {
                 x: Theme.horizontalPageMargin
-                text: qsTr("Hello Sailors")
+                text: qsTr("Hello TDLib")
                 color: Theme.secondaryHighlightColor
                 font.pixelSize: Theme.fontSizeExtraLarge
             }

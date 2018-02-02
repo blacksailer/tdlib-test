@@ -15,11 +15,11 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>UI Template</source>
+        <source>Hello TDLib</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Hello Sailors</source>
+        <source>UI Template1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
